@@ -47,6 +47,31 @@ TAM_CASILLA = 40
 FILAS = 15
 COLUMNAS = 15
 
+# pociciones de salida 
+
+SALIDAS = [
+    (4,6,"red"),
+    (6,10, "blue"),
+    (8,4, "green"),
+    (10,8, "yellow"),
+] 
+
+# pociciones de seguros 
+
+SEGUROS = [
+    (6, 4,"red")    ,(0,7,"red"),
+    (4, 8,"blue")   ,(7,14,"blue"),
+    (7, 0,"green")  ,(10,6,"green"),
+    (14, 7,"yellow"),(8,10,"yellow")
+
+]
+
+# pociciones de meta
+META = [
+    (7, 7,"red")
+    ]
+
+
 class TableroParques:
     def __init__(self, root):
         self.canvas = tk.Canvas(root, width=COLUMNAS*TAM_CASILLA, height=FILAS*TAM_CASILLA)
@@ -63,6 +88,11 @@ class TableroParques:
 
                 color = self.obtener_color(fila, col)
                 self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="black")
+        
+                # Dibujar seguros
+        self.marcar_salidas()
+        self.marcar_seguros()
+        self.marcar_meta()
 
     def obtener_color(self, fila, col):
         # Zonas de cárcel por jugador
@@ -84,6 +114,36 @@ class TableroParques:
             return "gray"
 
         return "#ccc"
+    
+    def marcar_salidas(self):
+        for fila, col, color in SALIDAS:
+            x1 = col * TAM_CASILLA
+            y1 = fila * TAM_CASILLA
+            x2 = x1 + TAM_CASILLA
+            y2 = y1 + TAM_CASILLA
+            self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="black")
+            self.canvas.create_text((x1+x2)//2, (y1+y2)//2, text="Salida", fill="white")
+            
+    def marcar_seguros(self):
+        for fila, col, color in SEGUROS:
+            x1 = col * TAM_CASILLA
+            y1 = fila * TAM_CASILLA
+            x2 = x1 + TAM_CASILLA
+            y2 = y1 + TAM_CASILLA
+            self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="black")
+            self.canvas.create_text((x1+x2)//2, (y1+y2)//2, text="Seguro", fill="white")
+
+
+    def marcar_meta(self):
+        for fila, col, color in META:
+            x1 = col * TAM_CASILLA
+            y1 = fila * TAM_CASILLA
+            x2 = x1 + TAM_CASILLA
+            y2 = y1 + TAM_CASILLA
+            self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="black")
+            self.canvas.create_text((x1+x2)//2, (y1+y2)//2, text="Meta", fill="white")
+    
+
 
 if __name__ == "__main__":
     root = tk.Tk()
