@@ -43,33 +43,36 @@ def cliente():
 # tablero de parques
 import tkinter as tk
 
-TAM_CASILLA = 40
-FILAS = 15
-COLUMNAS = 15
+TAM_CASILLA = 30
+FILAS = 18
+COLUMNAS = 18
 
 # pociciones de salida 
 
 SALIDAS = [
-    (4,6,"red"),
-    (6,10, "blue"),
-    (8,4, "green"),
-    (10,8, "yellow"),
+    (4,7,"red"),
+    (7,13, "blue"),
+    (10,4, "green"),
+    (13,10, "yellow"),
 ] 
 
 # pociciones de seguros 
 
 SEGUROS = [
-    (6, 4,"red")    ,(0,7,"red"),
-    (4, 8,"blue")   ,(7,14,"blue"),
-    (7, 0,"green")  ,(10,6,"green"),
-    (14, 7,"yellow"),(8,10,"yellow")
+    (8, 4,"red")    ,(0,8,"red"),
+    (4, 9,"blue")   ,(8,17,"blue"),
+    (9, 0,"green")  ,(13,8,"green"),
+    (17, 9,"yellow"),(9,13,"yellow")
 
 ]
 
 # pociciones de meta
 META = [
-    (7, 7,"red")
+    (7, 8,"red"),(9,7,"green"),
+    (8, 10,"blue"),(10,9,"yellow")
     ]
+
+
 
 
 class TableroParques:
@@ -77,6 +80,16 @@ class TableroParques:
         self.canvas = tk.Canvas(root, width=COLUMNAS*TAM_CASILLA, height=FILAS*TAM_CASILLA)
         self.canvas.pack()
         self.dibujar_tablero()
+        self.turno_label = tk.Label(root, text="esperando turno")
+        self.turno_label.pack(pady=10)
+        self.turno_label.config(text="¡Tu turno!")
+        self.boton_dado = tk.Button(root, text="Lanzar Dado", command=self.lanzar_dado)
+        self.boton_dado.pack()
+
+    def lanzar_dado(self):
+        self.sock.send("lanzar_dado".encode())
+
+
 
     def dibujar_tablero(self):
         for fila in range(FILAS):
@@ -96,13 +109,13 @@ class TableroParques:
 
     def obtener_color(self, fila, col):
         # Zonas de cárcel por jugador
-        if fila < 6 and col < 6:
+        if fila < 8 and col < 7:
             return "red"
-        elif fila < 6 and col > 8:
+        elif fila < 7 and col > 9:
             return "blue"
-        elif fila > 8 and col < 6:
+        elif fila > 10 and col < 8:
             return "green"
-        elif fila > 8 and col > 8:
+        elif fila > 9 and col > 10:
             return "yellow"
 
         # Camino central (cruz)
@@ -143,6 +156,13 @@ class TableroParques:
             self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="black")
             self.canvas.create_text((x1+x2)//2, (y1+y2)//2, text="Meta", fill="white")
     
+    def dibujar_ficha(self, fila, col, color):
+        x1 = col * TAM_CASILLA + 5
+        y1 = fila * TAM_CASILLA + 5
+        x2 = x1 + TAM_CASILLA - 10
+        y2 = y1 + TAM_CASILLA - 10
+        self.canvas.create_oval(x1, y1, x2, y2, fill=color, outline="black")
+
 
 
 if __name__ == "__main__":
