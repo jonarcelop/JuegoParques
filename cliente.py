@@ -83,8 +83,7 @@ class TableroParques:
         self.turno_label = tk.Label(root, text="esperando turno")
         self.turno_label.pack(pady=10)
         self.turno_label.config(text="¡Tu turno!")
-        self.boton_dado = tk.Button(root, text="Lanzar Dado", command=self.lanzar_dado)
-        self.boton_dado.pack()
+        
 
     def lanzar_dado(self):
         self.sock.send("lanzar_dado".encode())
